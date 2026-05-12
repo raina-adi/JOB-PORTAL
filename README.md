@@ -37,7 +37,7 @@ Welcome to the **Job Listing Portal**, a fully-featured, dynamically responsive 
 
 1. **Clone the Source Repository**
    ```bash
-   git clone https://github.com/Jaiamar/Job-Listing-Portal.git
+   git clone https://github.com/raina-adi/JOB-PORTAL.git
    cd Job-Listing-Portal
    ```
 
