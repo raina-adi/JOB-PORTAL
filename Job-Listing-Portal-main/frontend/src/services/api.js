@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://job-portal-gamma-mauve.vercel.app/api';
 
 const api = axios.create({
   baseURL: API_BASE
@@ -10,7 +10,11 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('jlp_token');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -25,6 +29,7 @@ api.interceptors.response.use(
       localStorage.removeItem('jlp_user');
       window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );
