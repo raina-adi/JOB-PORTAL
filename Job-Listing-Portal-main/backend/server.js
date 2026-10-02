@@ -7,50 +7,88 @@ const path = require('path');
 
 const connectDB = require('./config/db');
 
+// ========================================
 // Connect to MongoDB
+// ========================================
+
 connectDB();
 
 const app = express();
 
-// ================================
-// Middleware
-// ================================
+// ========================================
+// CORS
+// ========================================
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:3000',
+  'https://job-portal-mi7i.vercel.app'
+];
 
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      // Allow requests with no origin
+      // (Postman, server-to-server requests, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
   })
 );
 
+// ========================================
+// Middleware
+// ========================================
+
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10mb'
+  })
+);
 
 app.use(morgan('dev'));
 
-// ================================
+// ========================================
 // Static Files
-// ================================
+// ========================================
 
 app.use(
   '/uploads',
   express.static(path.join(__dirname, 'uploads'))
 );
 
-// ================================
-// Routes
-// ================================
+// ========================================
+// API Routes
+// ========================================
 
 app.use('/api/auth', require('./routes/auth'));
+
 app.use('/api/profiles', require('./routes/profiles'));
+
 app.use('/api/jobs', require('./routes/jobs'));
+
 app.use('/api/applications', require('./routes/applications'));
+
 app.use('/api/saved', require('./routes/saved'));
+
 app.use('/api/notifications', require('./routes/notifications'));
 
-// ================================
+// ========================================
 // Health Check
-// ================================
+// ========================================
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -60,12 +98,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ================================
+// ========================================
 // Global Error Handler
-// ================================
+// ========================================
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('ERROR:', err);
 
   res.status(err.status || 500).json({
     success: false,
@@ -73,9 +111,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ================================
+// ========================================
 // 404 Handler
-// ================================
+// ========================================
 
 app.use((req, res) => {
   res.status(404).json({
@@ -84,8 +122,8 @@ app.use((req, res) => {
   });
 });
 
-// ================================
-// Export App for Vercel
-// ================================
+// ========================================
+// Export for Vercel
+// ========================================
 
 module.exports = app;
