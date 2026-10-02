@@ -375,7 +375,7 @@ export default function Home() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2026 JobPortal by Amdox Technologies. All rights reserved.</p>
+            <p>© 2026 JobPortal by Raina. All rights reserved.</p>
           </div>
         </div>
       </footer>
